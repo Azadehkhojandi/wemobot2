@@ -1,1 +1,7 @@
 project.lock.json
+.vs/VSWorkspaceState.json
+.vs/config/
+.vs/slnx.sqlite
+appsettings.json
+messages/messages.csproj
+messages/obj/
