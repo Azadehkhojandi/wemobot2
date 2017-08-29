@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
+
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
@@ -30,17 +31,16 @@ public class BasicLuisDialog : LuisDialog<object>
     [LuisIntent("Off")]
     public async Task Off(IDialogContext context, LuisResult result)
     {
-         await context.PostAsync($" You said: {result.Query}"); 
+        await context.PostAsync($"You said: {result.Query}"); 
         
         var path=Utils.GetAppSetting("OffPath");
         
-        await context.PostAsync($" calling {path}");
         HttpClient client = new HttpClient();
         HttpResponseMessage response = await client.GetAsync(path);
             if (response.IsSuccessStatusCode)
             {
-                var x = await response.Content;
-                 await context.PostAsync($" result : {x}"); 
+                var x = await response.Content.ReadAsStringAsync();
+                 await context.PostAsync($"{x}"); 
             }
         
         context.Wait(MessageReceived);
@@ -50,12 +50,17 @@ public class BasicLuisDialog : LuisDialog<object>
     public async Task On(IDialogContext context, LuisResult result)
     {
       
-        await context.PostAsync($" You said: {result.Query}"); 
+        await context.PostAsync($"You said: {result.Query}"); 
         
         var path=Utils.GetAppSetting("OnPath");
         
-        await context.PostAsync($" calling {path}"); 
-             
+        HttpClient client = new HttpClient();
+        HttpResponseMessage response = await client.GetAsync(path);
+            if (response.IsSuccessStatusCode)
+            {
+                var x = await response.Content.ReadAsStringAsync();
+                 await context.PostAsync($"{x}"); 
+            }
         
         context.Wait(MessageReceived);
     }
